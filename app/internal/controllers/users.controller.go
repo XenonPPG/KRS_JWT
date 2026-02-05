@@ -8,52 +8,19 @@ import (
 
 	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/db_v1"
 	"github.com/gofiber/fiber/v2"
+	"google.golang.org/grpc"
 )
 
 func CreateUser(c *fiber.Ctx) error {
-	request := &desc.CreateUserRequest{}
-
-	// parse and validate
-	err := utils.ParseBodyAndValidate[desc.CreateUserRequest](c, request)
-	if err != nil {
-		return err
-	}
-
-	// hash password
-	request.Password, err = utils.HashPassword(request.GetPassword())
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	// create user
-	user, err := initializers.GrpcClient.CreateUser(context.Background(), request)
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"msg": "user created", "user": user})
+	return GrpcHandler(c, initializers.GrpcClient.CreateUser)
 }
 
 func GetAllUsers(c *fiber.Ctx) error {
-	request := &desc.GetAllUsersRequest{}
-
-	// parse and validate
-	err := utils.ParseBodyAndValidate[desc.GetAllUsersRequest](c, request)
-	if err != nil {
-		return err
-	}
-
-	// get users
-	users, err := initializers.GrpcClient.GetAllUsers(context.Background(), request)
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"users": users})
+	return GrpcHandler(c, initializers.GrpcClient.GetAllUsers)
 }
 
 func GetUser(c *fiber.Ctx) error {
-	request := &desc.GetUserRequest{}
+	request := desc.GetUserRequest{}
 
 	// parse
 	id, err := strconv.Atoi(c.Params("id"))
@@ -63,7 +30,7 @@ func GetUser(c *fiber.Ctx) error {
 	request.Id = int64(id)
 
 	// get user
-	user, err := initializers.GrpcClient.GetUser(context.Background(), request)
+	user, err := initializers.GrpcClient.GetUser(c.UserContext(), &request)
 	if err != nil {
 		return utils.InternalServerError(c)
 	}
@@ -72,49 +39,15 @@ func GetUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	request := &desc.UpdateUserRequest{}
-
-	// parse and validate
-	err := utils.ParseBodyAndValidate[desc.UpdateUserRequest](c, request)
-	if err != nil {
-		return err
-	}
-
-	// update user
-	user, err := initializers.GrpcClient.UpdateUser(context.Background(), request)
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"msg": "updated user", "user": user})
+	return GrpcHandler(c, initializers.GrpcClient.UpdateUser)
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
-	request := &desc.UpdatePasswordRequest{}
-
-	// parse and validate
-	err := utils.ParseBodyAndValidate[desc.UpdatePasswordRequest](c, request)
-	if err != nil {
-		return err
-	}
-
-	// hash password
-	request.NewPassword, err = utils.HashPassword(request.GetNewPassword())
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	// update password
-	_, err = initializers.GrpcClient.UpdatePassword(context.Background(), request)
-	if err != nil {
-		return utils.InternalServerError(c)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"msg": "password updated"})
+	return GrpcHandler(c, initializers.GrpcClient.UpdatePassword)
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	request := &desc.DeleteUserRequest{}
+	request := desc.DeleteUserRequest{}
 
 	// parse
 	id, err := strconv.Atoi(c.Params("id"))
@@ -123,29 +56,31 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 	request.Id = int64(id)
 
-	// delete user
-	_, err = initializers.GrpcClient.DeleteUser(context.Background(), request)
+	// get user
+	_, err = initializers.GrpcClient.DeleteUser(c.UserContext(), &request)
 	if err != nil {
 		return utils.InternalServerError(c)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"msg": "user deleted"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"deleted user": id})
 }
 
 func VerifyPassword(c *fiber.Ctx) error {
-	request := &desc.VerifyPasswordRequest{}
+	return GrpcHandler(c, initializers.GrpcClient.VerifyPassword)
+}
 
-	// parse and validate
-	err := utils.ParseBodyAndValidate[desc.VerifyPasswordRequest](c, request)
-	if err != nil {
+func GrpcHandler[Request any, Response any](
+	c *fiber.Ctx,
+	call func(context.Context, *Request, ...grpc.CallOption) (*Response, error)) error {
+	req := new(Request)
+	if err := utils.ParseBodyAndValidate[Request](c, req); err != nil {
 		return err
 	}
 
-	// verify password
-	isValid, err := initializers.GrpcClient.VerifyPassword(context.Background(), request)
+	res, err := call(c.UserContext(), req)
 	if err != nil {
 		return utils.InternalServerError(c)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"valid": isValid.GetValid()})
+	return c.Status(fiber.StatusOK).JSON(res)
 }

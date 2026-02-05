@@ -11,7 +11,7 @@ func main() {
 
 	api := app.Group("/api")
 	api.Route("/user", func(router fiber.Router) {
-		router.Post("/create", controllers.CreateUser)
+		router.Post("/", controllers.CreateUser)
 		router.Get("/", controllers.GetAllUsers)
 		router.Get("/:id", controllers.GetUser)
 		router.Put("/", controllers.UpdateUser)
