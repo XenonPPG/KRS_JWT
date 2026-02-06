@@ -8,6 +8,7 @@ require (
 	github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260205144947-7ff65066424b
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofiber/fiber/v2 v2.52.11
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/redis/go-redis/v9 v9.17.3
 	golang.org/x/crypto v0.47.0
 	google.golang.org/grpc v1.78.0
