@@ -8,15 +8,13 @@ import (
 
 var GrpcClient desc.DatabaseServiceClient
 
-// TODO: replace with Config later?
-func ConnectGRPC(url string) error {
+func ConnectGRPC(url string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(url, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	defer conn.Close()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	GrpcClient = desc.NewDatabaseServiceClient(conn)
-	return err
+	return conn, nil
 }

@@ -9,6 +9,8 @@ import (
 	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/db_v1"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func CreateUser(c *fiber.Ctx) error {
@@ -79,7 +81,29 @@ func GrpcHandler[Request any, Response any](
 
 	res, err := call(c.UserContext(), req)
 	if err != nil {
-		return utils.InternalServerError(c)
+		st, ok := status.FromError(err)
+		if !ok {
+			return utils.InternalServerError(c)
+		}
+
+		switch st.Code() {
+		case codes.InvalidArgument:
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"err": st.Message()})
+		case codes.NotFound:
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"err": st.Message()})
+		case codes.AlreadyExists:
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{"err": st.Message()})
+		case codes.Unauthenticated:
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"err": st.Message()})
+		case codes.PermissionDenied:
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"err": st.Message()})
+		case codes.Unavailable:
+			return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"err": st.Message()})
+		case codes.DeadlineExceeded:
+			return c.Status(fiber.StatusRequestTimeout).JSON(fiber.Map{"err": st.Message()})
+		default:
+			return utils.InternalServerError(c)
+		}
 	}
 
 	return c.Status(fiber.StatusOK).JSON(res)
