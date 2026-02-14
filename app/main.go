@@ -42,6 +42,16 @@ func main() {
 		protected.Delete("/:id", controllers.DeleteUser)
 	})
 
+	api.Route("/note", func(router fiber.Router) {
+		router.Use(middleware.JWTProtected)
+
+		router.Post("/", controllers.CreateNote)
+		router.Get("/", controllers.GetAllNotes)
+		router.Get("/:id", controllers.GetNote)
+		router.Put("/:id", controllers.UpdateNote)
+		router.Delete("/:id", controllers.DeleteNote)
+	})
+
 	err = app.Listen(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {
 		panic(err)
