@@ -35,7 +35,7 @@ func main() {
 		router.Post("/", controllers.CreateUser)
 		router.Get("/verify", controllers.VerifyPassword)
 
-		protected := router.Group("/", middleware.JWTProtected)
+		protected := router.Group("", middleware.JWTProtected)
 		protected.Get("/", controllers.GetAllUsers)
 		protected.Put("/", controllers.UpdateUser)
 		protected.Put("/password", controllers.UpdatePassword)
@@ -51,6 +51,8 @@ func main() {
 		router.Put("/:id", controllers.UpdateNote)
 		router.Delete("/:id", controllers.DeleteNote)
 	})
+
+	api.Get("/health", controllers.HealthCheck)
 
 	err = app.Listen(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

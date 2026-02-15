@@ -1,0 +1,22 @@
+# Git files
+.git
+.gitignore
+
+# IDE files
+.idea
+
+# Documentation
+README.md
+
+# Environment files
+config.env
+
+# Docker files
+docker-compose.yaml
+.dockerignore
+
+# Go build artifacts
+app/go.sum
+
+# Development tools
+Makefile
