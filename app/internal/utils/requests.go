@@ -8,8 +8,6 @@ import (
 var Validator = validator.New()
 
 func ParseBodyAndValidate[T any](c *fiber.Ctx, in any) error {
-	in = in.(T)
-
 	if err := c.BodyParser(in); err != nil {
 		return BadRequest(c)
 	}

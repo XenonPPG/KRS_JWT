@@ -6,12 +6,19 @@ services:
     container_name: krs_app
     ports:
       - "50051:50051"
+      - "3000:3000"
+    env_file:
+      - config.env
     environment:
       - REDIS_ADDRESS=redis:6379
-      - APP_PORT=50051
+      - APP_PORT=3000
     depends_on:
       redis:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
+      db-service:
+        condition: service_started
     networks:
       - microservice_net
 
@@ -21,13 +28,42 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 5
     networks:
       - microservice_net
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: krs_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - config.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - microservice_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U krs_user -d krs_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-service:
+    image: xenonppg/krs_db:latest
+    container_name: krs_db_service
+    volumes:
+      - ./config.env:/root/config.env
+    networks:
+      - microservice_net
+
 networks:
   microservice_net:
     driver: bridge
+
+volumes:
+  pgdata:
