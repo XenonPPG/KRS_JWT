@@ -33,7 +33,7 @@ func main() {
 	api.Route("/user", func(router fiber.Router) {
 		router.Get("/:id", controllers.GetUser)
 		router.Post("/", controllers.CreateUser)
-		router.Get("/verify", controllers.VerifyPassword)
+		router.Post("/login", controllers.Login)
 
 		protected := router.Group("", middleware.JWTProtected)
 		protected.Get("/", controllers.GetAllUsers)

@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"JWT/internal/initializers"
+	"JWT/internal/middleware"
+	"JWT/internal/models"
 	"JWT/internal/utils"
 	"strconv"
 
@@ -13,7 +15,7 @@ func CreateUser(c *fiber.Ctx) error {
 	request := desc.CreateUserRequest{}
 
 	// parse request body
-	if err := c.BodyParser(&request); err != nil {
+	if err := utils.ParseBodyAndValidate[desc.CreateUserRequest](c, &request); err != nil {
 		return utils.BadRequest(c)
 	}
 
@@ -33,7 +35,22 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func GetAllUsers(c *fiber.Ctx) error {
-	return utils.GrpcHandler(c, initializers.GrpcUserService.GetAllUsers)
+	request := models.GetAllUsersRequest{}
+
+	// parse query
+	if err := c.QueryParser(&request); err != nil {
+		return utils.BadRequest(c)
+	}
+
+	users, err := initializers.GrpcUserService.GetAllUsers(c.UserContext(), &desc.GetAllUsersRequest{
+		Limit:  request.Limit,
+		Offset: request.Offset,
+	})
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"users": users})
 }
 
 func GetUser(c *fiber.Ctx) error {
@@ -82,6 +99,25 @@ func DeleteUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"deleted user": id})
 }
 
-func VerifyPassword(c *fiber.Ctx) error {
-	return utils.GrpcHandler(c, initializers.GrpcUserService.VerifyPassword)
+func Login(c *fiber.Ctx) error {
+	request := desc.LoginRequest{}
+
+	// parse request
+	if err := c.BodyParser(&request); err != nil {
+		return utils.BadRequest(c)
+	}
+
+	// get response
+	response, err := initializers.GrpcUserService.Login(c.Context(), &request)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	// make token
+	access, refresh, err := middleware.GenerateTokenPair(response.Id, response.Role)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
 }
