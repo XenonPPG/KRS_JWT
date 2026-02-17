@@ -10,7 +10,26 @@ import (
 )
 
 func CreateUser(c *fiber.Ctx) error {
-	return utils.GrpcHandler(c, initializers.GrpcUserService.CreateUser)
+	request := desc.CreateUserRequest{}
+
+	// parse request body
+	if err := c.BodyParser(&request); err != nil {
+		return utils.BadRequest(c)
+	}
+
+	// hash password
+	hashedPassword, err := utils.HashPassword(request.Password)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	request.Password = hashedPassword
+	user, err := initializers.GrpcUserService.CreateUser(c.UserContext(), &request)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"user": user})
 }
 
 func GetAllUsers(c *fiber.Ctx) error {
