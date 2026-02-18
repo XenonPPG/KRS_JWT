@@ -4,8 +4,11 @@ import (
 	"JWT/internal/initializers"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
+	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/user_v1"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -22,11 +25,11 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateTokenPair(userID string, role string) (access string, refresh string, err error) {
+func GenerateTokenPair(userID int64, role *desc.UserRole) (access string, refresh string, err error) {
 	// access token
 	accessClaims := &Claims{
-		UserID: userID,
-		Role:   role,
+		UserID: strconv.FormatInt(userID, 10),
+		Role:   string(*role),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -58,7 +61,7 @@ func JWTProtected(c *fiber.Ctx) error {
 	}
 
 	// remove "Bearer " from string
-	tokenString := authHeader[7:]
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
 	// parse and validate
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

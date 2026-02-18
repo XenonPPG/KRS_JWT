@@ -24,6 +24,7 @@ vendor/
 # Environment variables
 .env
 .env.local
+./config.env
 
 # Build artifacts
 *.out

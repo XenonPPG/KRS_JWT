@@ -6,6 +6,7 @@ import (
 	"JWT/internal/models"
 	"JWT/internal/utils"
 	"strconv"
+	"time"
 
 	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/user_v1"
 	"github.com/gofiber/fiber/v2"
@@ -118,6 +119,25 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.InternalServerError(c)
 	}
+
+	// make cookies
+	c.Cookie(&fiber.Cookie{
+		Name:     "access_token",
+		Value:    access,
+		Expires:  time.Now().Add(15 * time.Minute),
+		HTTPOnly: true,
+		Secure:   true,
+		SameSite: "Lax",
+	})
+
+	c.Cookie(&fiber.Cookie{
+		Name:     "refresh_token",
+		Value:    refresh,
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
+		HTTPOnly: true,
+		Secure:   true,
+		Path:     "/auth/refresh",
+	})
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
 }
