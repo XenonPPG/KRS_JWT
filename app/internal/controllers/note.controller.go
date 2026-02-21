@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"JWT/internal/initializers"
+	"JWT/internal/models"
 	"JWT/internal/utils"
 	"strconv"
 
@@ -14,7 +15,22 @@ func CreateNote(c *fiber.Ctx) error {
 }
 
 func GetAllNotes(c *fiber.Ctx) error {
-	return utils.GrpcHandler(c, initializers.GrpcNoteService.GetAllNotes)
+	request := models.GetAllItemsRequest{}
+
+	// parse query
+	if err := c.QueryParser(&request); err != nil {
+		return utils.BadRequest(c)
+	}
+
+	notes, err := initializers.GrpcNoteService.GetAllNotes(c.UserContext(), &desc.GetAllNotesRequest{
+		Limit:  request.Limit,
+		Offset: request.Offset,
+	})
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"notes": notes})
 }
 
 func GetNote(c *fiber.Ctx) error {

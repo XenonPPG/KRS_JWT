@@ -36,7 +36,7 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func GetAllUsers(c *fiber.Ctx) error {
-	request := models.GetAllUsersRequest{}
+	request := models.GetAllItemsRequest{}
 
 	// parse query
 	if err := c.QueryParser(&request); err != nil {

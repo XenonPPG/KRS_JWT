@@ -60,6 +60,8 @@ services:
       - ./config.env:/root/config.env
     networks:
       - microservice_net
+    env_file:
+      - config.env
 
 networks:
   microservice_net:

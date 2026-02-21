@@ -48,7 +48,7 @@ func main() {
 		router.Post("/", controllers.CreateNote)
 		router.Get("/", controllers.GetAllNotes)
 		router.Get("/:id", controllers.GetNote)
-		router.Put("/:id", controllers.UpdateNote)
+		router.Put("/", controllers.UpdateNote)
 		router.Delete("/:id", controllers.DeleteNote)
 	})
 
