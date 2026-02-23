@@ -21,7 +21,7 @@ func GrpcHandler[Request any, Response any](
 	if err != nil {
 		st, ok := status.FromError(err)
 		if !ok {
-			return InternalServerError(c)
+			return InternalServerError(c, err)
 		}
 
 		switch st.Code() {
@@ -40,7 +40,7 @@ func GrpcHandler[Request any, Response any](
 		case codes.DeadlineExceeded:
 			return c.Status(fiber.StatusRequestTimeout).JSON(fiber.Map{"err": st.Message()})
 		default:
-			return InternalServerError(c)
+			return InternalServerError(c, err)
 		}
 	}
 

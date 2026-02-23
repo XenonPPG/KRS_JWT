@@ -36,8 +36,8 @@ func RoleRequired(allowedRoles ...desc.UserRole) fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-			"err":  "access denied, missing required role",
-			"role": userRole,
+			"err":           "access denied, missing required role",
+			"received_role": userRole,
 		})
 	}
 }

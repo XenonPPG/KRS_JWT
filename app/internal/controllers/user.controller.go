@@ -24,13 +24,13 @@ func CreateUser(c *fiber.Ctx) error {
 	// hash password
 	hashedPassword, err := utils.HashPassword(request.Password)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	request.Password = hashedPassword
 	user, err := initializers.GrpcUserService.CreateUser(c.UserContext(), &request)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"user": user})
@@ -49,7 +49,7 @@ func GetAllUsers(c *fiber.Ctx) error {
 		Offset: request.Offset,
 	})
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"users": users})
@@ -68,7 +68,7 @@ func GetUser(c *fiber.Ctx) error {
 	// get user
 	user, err := initializers.GrpcUserService.GetUser(c.UserContext(), &request)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"user": user})
@@ -91,7 +91,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	// update user
 	response, err := initializers.GrpcUserService.UpdateUser(c.UserContext(), &request)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"updated user": response})
@@ -106,14 +106,17 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	targetId, err := utils.GetTargetId(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"err": "Bad request"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"err": "Bad request",
+			"msg": err.Error(),
+		})
 	}
 	request.Id = targetId
 
 	// get user
 	_, err = initializers.GrpcUserService.DeleteUser(c.UserContext(), &request)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"deleted user": targetId})
@@ -130,7 +133,7 @@ func Login(c *fiber.Ctx) error {
 	// get response
 	response, err := initializers.GrpcUserService.Login(c.Context(), &request)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	// make token
@@ -139,7 +142,7 @@ func Login(c *fiber.Ctx) error {
 		Role: *response.Role,
 	})
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
@@ -193,7 +196,7 @@ func RefreshTokens(c *fiber.Ctx) error {
 	// delete old refresh token
 	err = initializers.TokenService.DeleteRefreshToken(c.Context(), oldRefresh)
 	if err != nil {
-		return utils.InternalServerError(c)
+		return utils.InternalServerError(c, err)
 	}
 
 	// issue new tokens

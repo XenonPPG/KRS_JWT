@@ -102,7 +102,7 @@ func JWTProtected(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"err": "invalid claims"})
 	}
 
-	c.Locals("userID", claims.UserID)
+	c.Locals("user_id", claims.UserID)
 	c.Locals("role", claims.Role)
 
 	return c.Next()
