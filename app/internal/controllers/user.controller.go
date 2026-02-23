@@ -10,6 +10,7 @@ import (
 
 	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/user_v1"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func CreateUser(c *fiber.Ctx) error {
@@ -74,7 +75,26 @@ func GetUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	return utils.GrpcHandler(c, initializers.GrpcUserService.UpdateUser)
+	var request desc.UpdateUserRequest
+
+	targetId, err := utils.GetTargetId(c)
+	if err != nil {
+		return utils.BadRequest(c)
+	}
+
+	// parse request body
+	if err := utils.ParseBodyAndValidate[desc.UpdateUserRequest](c, &request); err != nil {
+		return utils.BadRequest(c)
+	}
+	request.Id = targetId
+
+	// update user
+	response, err := initializers.GrpcUserService.UpdateUser(c.UserContext(), &request)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"updated user": response})
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
@@ -84,12 +104,11 @@ func UpdatePassword(c *fiber.Ctx) error {
 func DeleteUser(c *fiber.Ctx) error {
 	request := desc.DeleteUserRequest{}
 
-	// parse
-	id, err := strconv.Atoi(c.Params("id"))
+	targetId, err := utils.GetTargetId(c)
 	if err != nil {
-		return utils.BadRequest(c)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"err": "Bad request"})
 	}
-	request.Id = int64(id)
+	request.Id = targetId
 
 	// get user
 	_, err = initializers.GrpcUserService.DeleteUser(c.UserContext(), &request)
@@ -97,7 +116,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return utils.InternalServerError(c)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"deleted user": id})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"deleted user": targetId})
 }
 
 func Login(c *fiber.Ctx) error {
@@ -115,29 +134,73 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// make token
-	access, refresh, err := middleware.GenerateTokenPair(response.Id, response.Role)
+	access, refresh, err := middleware.IssueTokenPair(c, &models.UserInfo{
+		Id:   response.Id,
+		Role: *response.Role,
+	})
 	if err != nil {
 		return utils.InternalServerError(c)
 	}
 
-	// make cookies
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
+}
+
+func Logout(c *fiber.Ctx) error {
+	refreshToken := c.Cookies("refresh_token")
+	if refreshToken != "" {
+		_ = initializers.TokenService.DeleteRefreshToken(c.Context(), refreshToken)
+	}
+
+	// delete cookies
 	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",
-		Value:    access,
-		Expires:  time.Now().Add(15 * time.Minute),
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour * 999), // Прошедшее время удаляет куку
 		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Lax",
 	})
-
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
-		Value:    refresh,
-		Expires:  time.Now().Add(7 * 24 * time.Hour),
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour * 999),
 		HTTPOnly: true,
-		Secure:   true,
-		Path:     "/auth/refresh",
+		Path:     "/api/auth/refresh",
 	})
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"msg": "logged out"})
+}
+
+func RefreshTokens(c *fiber.Ctx) error {
+	// get refresh token from cookie
+	oldRefresh := c.Cookies("refresh_token")
+	if oldRefresh == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"err": "refresh token missing"})
+	}
+
+	// check jwt validity
+	_, err := jwt.Parse(oldRefresh, func(token *jwt.Token) (interface{}, error) {
+		return initializers.RefreshSecret, nil
+	})
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"err": "invalid or expired refresh token"})
+	}
+
+	// check refresh token in storage
+	userInfo, err := initializers.TokenService.ValidateRefreshToken(c.Context(), oldRefresh)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"err": "session not found or expired in storage"})
+	}
+
+	// delete old refresh token
+	err = initializers.TokenService.DeleteRefreshToken(c.Context(), oldRefresh)
+	if err != nil {
+		return utils.InternalServerError(c)
+	}
+
+	// issue new tokens
+	_, _, err = middleware.IssueTokenPair(c, userInfo)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"err": "could not generate new tokens"})
+	}
+
+	return c.JSON(fiber.Map{"status": "success", "message": "tokens rotated"})
 }

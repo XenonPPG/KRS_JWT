@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/user_v1"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc"
 )
@@ -31,15 +32,28 @@ func main() {
 
 	api := app.Group("/api")
 	api.Route("/user", func(router fiber.Router) {
-		router.Get("/:id", controllers.GetUser)
+		// public
 		router.Post("/", controllers.CreateUser)
-		router.Post("/login", controllers.Login)
+		router.Get("/:id", controllers.GetUser)
 
+		// jwt protected
 		protected := router.Group("", middleware.JWTProtected)
-		protected.Get("/", controllers.GetAllUsers)
-		protected.Put("/", controllers.UpdateUser)
 		protected.Put("/password", controllers.UpdatePassword)
+
+		// targetID is defined by user role
+		// if the role is not enough - id from params is ignored
 		protected.Delete("/:id", controllers.DeleteUser)
+		protected.Put("/:id", controllers.UpdateUser)
+
+		// admins can control other accounts
+		adminOnly := router.Group("/", middleware.JWTProtected, middleware.RoleRequired(desc.UserRole_ADMIN))
+		adminOnly.Get("/", controllers.GetAllUsers)
+	})
+
+	api.Route("/auth", func(router fiber.Router) {
+		router.Post("/login", controllers.Login)
+		router.Post("/refresh", controllers.RefreshTokens)
+		router.Post("/logout", controllers.Logout)
 	})
 
 	api.Route("/note", func(router fiber.Router) {
