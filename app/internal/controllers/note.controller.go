@@ -10,6 +10,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// CreateNote godoc
+// @Summary Create a new note
+// @Description Creates a new note for the authenticated user
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param note body desc.CreateNoteRequest true "Note creation request"
+// @Success 201 {object} map[string]interface{} "note"
+// @Failure 400 {object} map[string]interface{} "Bad Request"
+// @Failure 500 {object} map[string]interface{} "Internal Server Error"
+// @Security BearerAuth
+// @Router /notes [post]
 func CreateNote(c *fiber.Ctx) error {
 	// get id
 	targetId, ok := c.Locals("user_id").(int64)
@@ -33,6 +45,18 @@ func CreateNote(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"note": note})
 }
 
+// GetAllNotes godoc
+// @Summary Get all notes
+// @Description Retrieves all notes for the authenticated user with pagination
+// @Tags notes
+// @Produce json
+// @Param limit query int false "Limit number of notes"
+// @Param offset query int false "Offset for pagination"
+// @Success 200 {object} map[string]interface{} "notes"
+// @Failure 400 {object} map[string]interface{} "Bad Request"
+// @Failure 500 {object} map[string]interface{} "Internal Server Error"
+// @Security BearerAuth
+// @Router /notes [get]
 func GetAllNotes(c *fiber.Ctx) error {
 	request := models.GetAllItemsRequest{}
 
@@ -59,6 +83,17 @@ func GetAllNotes(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"notes": notes})
 }
 
+// GetNote godoc
+// @Summary Get a specific note
+// @Description Retrieves a specific note by ID for the authenticated user
+// @Tags notes
+// @Produce json
+// @Param id path int true "Note ID"
+// @Success 200 {object} map[string]interface{} "note"
+// @Failure 400 {object} map[string]interface{} "Bad Request"
+// @Failure 500 {object} map[string]interface{} "Internal Server Error"
+// @Security BearerAuth
+// @Router /notes/{id} [get]
 func GetNote(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -85,6 +120,18 @@ func GetNote(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"note": note})
 }
 
+// UpdateNote godoc
+// @Summary Update a note
+// @Description Updates an existing note for the authenticated user
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param note body desc.UpdateNoteRequest true "Note update request"
+// @Success 201 {object} map[string]interface{} "note"
+// @Failure 400 {object} map[string]interface{} "Bad Request"
+// @Failure 500 {object} map[string]interface{} "Internal Server Error"
+// @Security BearerAuth
+// @Router /notes [put]
 func UpdateNote(c *fiber.Ctx) error {
 	// get id
 	targetId, ok := c.Locals("user_id").(int64)
@@ -108,6 +155,17 @@ func UpdateNote(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"note": note})
 }
 
+// DeleteNote godoc
+// @Summary Delete a note
+// @Description Deletes a specific note by ID for the authenticated user
+// @Tags notes
+// @Produce json
+// @Param id path int true "Note ID"
+// @Success 200 {object} map[string]interface{} "deleted note"
+// @Failure 400 {object} map[string]interface{} "Bad Request"
+// @Failure 500 {object} map[string]interface{} "Internal Server Error"
+// @Security BearerAuth
+// @Router /notes/{id} [delete]
 func DeleteNote(c *fiber.Ctx) error {
 	// get user id
 	targetId, ok := c.Locals("user_id").(int64)

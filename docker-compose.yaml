@@ -63,6 +63,22 @@ services:
     env_file:
       - config.env
 
+  swagger-gen:
+    image: golang:1.24-alpine
+    container_name: swagger_gen
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: >
+      sh -c "
+        go install github.com/swaggo/swag/cmd/swag@latest &&
+        swag init -g main.go -o ./docs --parseDependency --parseInternal
+      "
+    profiles:
+      - tools
+    networks:
+      - microservice_net
+
 networks:
   microservice_net:
     driver: bridge

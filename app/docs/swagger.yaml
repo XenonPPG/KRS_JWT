@@ -1,0 +1,525 @@
+definitions:
+  note_v1.CreateNoteRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      userID:
+        type: integer
+    type: object
+  note_v1.UpdateNoteRequest:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      userID:
+        description: for checking if note is owned by requesting user
+        type: integer
+    type: object
+  user_v1.ColorTheme:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    format: int32
+    type: integer
+    x-enum-varnames:
+    - ColorTheme_UNSPECIFIED
+    - ColorTheme_AUTO
+    - ColorTheme_LIGHT
+    - ColorTheme_DARK
+  user_v1.CreateUserRequest:
+    properties:
+      colorTheme:
+        $ref: '#/definitions/user_v1.ColorTheme'
+      login:
+        type: string
+      password:
+        type: string
+      role:
+        $ref: '#/definitions/user_v1.UserRole'
+    type: object
+  user_v1.LoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  user_v1.UpdateUserRequest:
+    properties:
+      colorTheme:
+        $ref: '#/definitions/user_v1.ColorTheme'
+      id:
+        type: integer
+      login:
+        type: string
+      role:
+        $ref: '#/definitions/user_v1.UserRole'
+    type: object
+  user_v1.UserRole:
+    enum:
+    - 0
+    - 1
+    format: int32
+    type: integer
+    x-enum-varnames:
+    - UserRole_DEFAULT
+    - UserRole_ADMIN
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns JWT access and refresh tokens
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_v1.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: tokens issued successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Logs out the user by invalidating refresh token and clearing cookies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: logged out successfully
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User logout
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      description: Rotates refresh token and issues new access and refresh tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: tokens rotated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: unauthorized - invalid or missing refresh token
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access tokens
+      tags:
+      - auth
+  /health:
+    get:
+      description: Returns the health status of the application
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Healthy :)
+          schema:
+            type: string
+      summary: Health check endpoint
+      tags:
+      - health
+  /notes:
+    get:
+      description: Retrieves all notes for the authenticated user with pagination
+      parameters:
+      - description: Limit number of notes
+        in: query
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: notes
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all notes
+      tags:
+      - notes
+    post:
+      consumes:
+      - application/json
+      description: Creates a new note for the authenticated user
+      parameters:
+      - description: Note creation request
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/note_v1.CreateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: note
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new note
+      tags:
+      - notes
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing note for the authenticated user
+      parameters:
+      - description: Note update request
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/note_v1.UpdateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: note
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a note
+      tags:
+      - notes
+  /notes/{id}:
+    delete:
+      description: Deletes a specific note by ID for the authenticated user
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: deleted note
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a note
+      tags:
+      - notes
+    get:
+      description: Retrieves a specific note by ID for the authenticated user
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: note
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a specific note
+      tags:
+      - notes
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all users with pagination
+      parameters:
+      - description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: users retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account with hashed password
+      parameters:
+      - description: User creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_v1.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: user created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing user's information
+      parameters:
+      - description: User update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_v1.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specific user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a specific user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a user by ID
+      tags:
+      - users
+  /users/password:
+    put:
+      consumes:
+      - application/json
+      description: Updates the password for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: password updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user password
+      tags:
+      - users
+swagger: "2.0"
