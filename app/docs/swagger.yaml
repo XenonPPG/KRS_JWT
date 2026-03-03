@@ -149,12 +149,13 @@ paths:
     get:
       description: Returns the health status of the application
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
-          description: Healthy :)
+          description: status
           schema:
-            type: string
+            additionalProperties: true
+            type: object
       summary: Health check endpoint
       tags:
       - health

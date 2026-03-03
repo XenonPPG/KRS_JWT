@@ -124,7 +124,7 @@ const docTemplate = `{
             "get": {
                 "description": "Returns the health status of the application",
                 "produces": [
-                    "text/plain"
+                    "application/json"
                 ],
                 "tags": [
                     "health"
@@ -132,9 +132,10 @@ const docTemplate = `{
                 "summary": "Health check endpoint",
                 "responses": {
                     "200": {
-                        "description": "Healthy :)",
+                        "description": "status",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
