@@ -78,7 +78,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Authenticates a user and returns JWT access and refresh tokens
+      description: Authenticates a user and returns JWT access, refresh tokens, user
+        info
       parameters:
       - description: Login credentials
         in: body

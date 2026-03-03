@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/api/auth/login": {
             "post": {
-                "description": "Authenticates a user and returns JWT access and refresh tokens",
+                "description": "Authenticates a user and returns JWT access, refresh tokens, user info",
                 "consumes": [
                     "application/json"
                 ],

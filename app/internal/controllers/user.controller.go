@@ -195,7 +195,7 @@ func DeleteUser(c *fiber.Ctx) error {
 
 // Login godoc
 // @Summary User login
-// @Description Authenticates a user and returns JWT access and refresh tokens
+// @Description Authenticates a user and returns JWT access, refresh tokens, user info
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -227,7 +227,11 @@ func Login(c *fiber.Ctx) error {
 		return utils.InternalServerError(c, err)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"access": access, "refresh": refresh})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"access":  access,
+		"refresh": refresh,
+		"user":    response,
+	})
 }
 
 // Logout godoc
