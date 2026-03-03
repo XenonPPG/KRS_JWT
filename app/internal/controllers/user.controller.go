@@ -23,7 +23,7 @@ import (
 // @Success 201 {object} map[string]interface{} "user created successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users [post]
+// @Router /api/user [post]
 func CreateUser(c *fiber.Ctx) error {
 	request := desc.CreateUserRequest{}
 
@@ -59,7 +59,7 @@ func CreateUser(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "users retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users [get]
+// @Router /api/user [get]
 func GetAllUsers(c *fiber.Ctx) error {
 	request := models.GetAllItemsRequest{}
 
@@ -90,7 +90,7 @@ func GetAllUsers(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "user retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users/{id} [get]
+// @Router /api/user/{id} [get]
 func GetUser(c *fiber.Ctx) error {
 	request := desc.GetUserRequest{}
 
@@ -121,7 +121,7 @@ func GetUser(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "user updated successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users [put]
+// @Router /api/user [put]
 func UpdateUser(c *fiber.Ctx) error {
 	var request desc.UpdateUserRequest
 
@@ -155,7 +155,7 @@ func UpdateUser(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "password updated successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users/password [put]
+// @Router /api/user/password [put]
 func UpdatePassword(c *fiber.Ctx) error {
 	return utils.GrpcHandler(c, initializers.GrpcUserService.UpdatePassword)
 }
@@ -171,7 +171,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "user deleted successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /users/{id} [delete]
+// @Router /api/user/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	request := desc.DeleteUserRequest{}
 
@@ -203,7 +203,7 @@ func DeleteUser(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "tokens issued successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /auth/login [post]
+// @Router /api/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	request := desc.LoginRequest{}
 
@@ -236,7 +236,7 @@ func Login(c *fiber.Ctx) error {
 // @Tags auth
 // @Produce json
 // @Success 200 {object} map[string]interface{} "logged out successfully"
-// @Router /auth/logout [post]
+// @Router /api/auth/logout [post]
 func Logout(c *fiber.Ctx) error {
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken != "" {
@@ -269,7 +269,7 @@ func Logout(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "tokens rotated successfully"
 // @Failure 401 {object} map[string]interface{} "unauthorized - invalid or missing refresh token"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /auth/refresh [post]
+// @Router /api/auth/refresh [post]
 func RefreshTokens(c *fiber.Ctx) error {
 	// get refresh token from cookie
 	oldRefresh := c.Cookies("refresh_token")

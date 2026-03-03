@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/login": {
+        "/api/auth/login": {
             "post": {
                 "description": "Authenticates a user and returns JWT access and refresh tokens",
                 "consumes": [
@@ -64,7 +64,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/logout": {
+        "/api/auth/logout": {
             "post": {
                 "description": "Logs out the user by invalidating refresh token and clearing cookies",
                 "produces": [
@@ -85,7 +85,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh": {
+        "/api/auth/refresh": {
             "post": {
                 "description": "Rotates refresh token and issues new access and refresh tokens",
                 "produces": [
@@ -120,7 +120,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/health": {
+        "/api/health": {
             "get": {
                 "description": "Returns the health status of the application",
                 "produces": [
@@ -141,7 +141,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/notes": {
+        "/api/note": {
             "get": {
                 "security": [
                     {
@@ -299,7 +299,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/notes/{id}": {
+        "/api/note/{id}": {
             "get": {
                 "security": [
                     {
@@ -395,7 +395,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users": {
+        "/api/user": {
             "get": {
                 "security": [
                     {
@@ -551,7 +551,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/password": {
+        "/api/user/password": {
             "put": {
                 "security": [
                     {
@@ -594,7 +594,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{id}": {
+        "/api/user/{id}": {
             "get": {
                 "security": [
                     {

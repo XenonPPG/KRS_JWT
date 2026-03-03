@@ -21,7 +21,7 @@ import (
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /notes [post]
+// @Router /api/note [post]
 func CreateNote(c *fiber.Ctx) error {
 	// get id
 	targetId, ok := c.Locals("user_id").(int64)
@@ -56,7 +56,7 @@ func CreateNote(c *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /notes [get]
+// @Router /api/note [get]
 func GetAllNotes(c *fiber.Ctx) error {
 	request := models.GetAllItemsRequest{}
 
@@ -93,7 +93,7 @@ func GetAllNotes(c *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /notes/{id} [get]
+// @Router /api/note/{id} [get]
 func GetNote(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -131,7 +131,7 @@ func GetNote(c *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /notes [put]
+// @Router /api/note [put]
 func UpdateNote(c *fiber.Ctx) error {
 	// get id
 	targetId, ok := c.Locals("user_id").(int64)
@@ -165,7 +165,7 @@ func UpdateNote(c *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /notes/{id} [delete]
+// @Router /api/note/{id} [delete]
 func DeleteNote(c *fiber.Ctx) error {
 	// get user id
 	targetId, ok := c.Locals("user_id").(int64)

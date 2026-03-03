@@ -74,7 +74,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
       consumes:
       - application/json
@@ -107,7 +107,7 @@ paths:
       summary: User login
       tags:
       - auth
-  /auth/logout:
+  /api/auth/logout:
     post:
       description: Logs out the user by invalidating refresh token and clearing cookies
       produces:
@@ -121,7 +121,7 @@ paths:
       summary: User logout
       tags:
       - auth
-  /auth/refresh:
+  /api/auth/refresh:
     post:
       description: Rotates refresh token and issues new access and refresh tokens
       produces:
@@ -145,7 +145,7 @@ paths:
       summary: Refresh access tokens
       tags:
       - auth
-  /health:
+  /api/health:
     get:
       description: Returns the health status of the application
       produces:
@@ -159,7 +159,7 @@ paths:
       summary: Health check endpoint
       tags:
       - health
-  /notes:
+  /api/note:
     get:
       description: Retrieves all notes for the authenticated user with pagination
       parameters:
@@ -262,7 +262,7 @@ paths:
       summary: Update a note
       tags:
       - notes
-  /notes/{id}:
+  /api/note/{id}:
     delete:
       description: Deletes a specific note by ID for the authenticated user
       parameters:
@@ -325,7 +325,7 @@ paths:
       summary: Get a specific note
       tags:
       - notes
-  /users:
+  /api/user:
     get:
       consumes:
       - application/json
@@ -428,7 +428,7 @@ paths:
       summary: Update a user
       tags:
       - users
-  /users/{id}:
+  /api/user/{id}:
     delete:
       consumes:
       - application/json
@@ -495,7 +495,7 @@ paths:
       summary: Get a user by ID
       tags:
       - users
-  /users/password:
+  /api/user/password:
     put:
       consumes:
       - application/json
