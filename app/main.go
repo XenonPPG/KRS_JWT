@@ -9,6 +9,7 @@ import (
 
 	desc "github.com/XenonPPG/KRS_CONTRACTS/gen/user_v1"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"google.golang.org/grpc"
 )
 
@@ -29,6 +30,12 @@ func main() {
 	fmt.Println("Starting server...")
 
 	app := fiber.New()
+
+	// CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:5173",
+		AllowCredentials: true,
+	}))
 
 	api := app.Group("/api")
 	api.Route("/user", func(router fiber.Router) {
