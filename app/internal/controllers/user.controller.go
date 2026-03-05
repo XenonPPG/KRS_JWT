@@ -252,7 +252,7 @@ func Logout(c *fiber.Ctx) error {
 		Name:     "access_token",
 		Value:    "",
 		Expires:  time.Now().Add(-time.Hour * 999), // Прошедшее время удаляет куку
-		HTTPOnly: true,
+		HTTPOnly: false,
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",

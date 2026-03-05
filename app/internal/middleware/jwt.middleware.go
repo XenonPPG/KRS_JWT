@@ -57,7 +57,7 @@ func IssueTokenPair(c *fiber.Ctx, userInfo *models.UserInfo) (access string, ref
 		Name:     "access_token",
 		Value:    access,
 		Expires:  time.Now().Add(15 * time.Minute),
-		HTTPOnly: true,
+		HTTPOnly: false,
 		Secure:   false,
 		SameSite: "Lax",
 	})
