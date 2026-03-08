@@ -706,9 +706,6 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
-                },
-                "userID": {
-                    "type": "integer"
                 }
             }
         },
@@ -723,10 +720,6 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
-                },
-                "userID": {
-                    "description": "for checking if note is owned by requesting user",
-                    "type": "integer"
                 }
             }
         },

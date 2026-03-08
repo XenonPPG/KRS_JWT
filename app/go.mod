@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.5
 
 require (
-	github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260223122829-6cb2c64bd259
+	github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260308202902-af81ff200c22
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofiber/fiber/v2 v2.52.11
 	github.com/golang-jwt/jwt/v5 v5.3.1
@@ -38,6 +38,7 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
+	github.com/srikrsna/protoc-gen-gotag v1.0.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.69.0 // indirect
 	golang.org/x/mod v0.31.0 // indirect
