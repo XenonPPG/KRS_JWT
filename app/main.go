@@ -40,7 +40,7 @@ func main() {
 	api := app.Group("/api")
 	api.Route("/user", func(router fiber.Router) {
 		// public
-		router.Post("/", controllers.CreateUser)
+		router.Post("/", middleware.AutoLogout, controllers.CreateUser)
 		router.Get("/:id", controllers.GetUser)
 
 		// jwt protected
@@ -58,9 +58,9 @@ func main() {
 	})
 
 	api.Route("/auth", func(router fiber.Router) {
-		router.Post("/login", controllers.Login)
+		router.Post("/logout", controllers.LogoutHandler)
 		router.Post("/refresh", controllers.RefreshTokens)
-		router.Post("/logout", controllers.Logout)
+		router.Post("/login", middleware.AutoLogout, controllers.Login)
 	})
 
 	api.Route("/note", func(router fiber.Router) {

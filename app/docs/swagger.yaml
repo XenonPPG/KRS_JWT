@@ -102,7 +102,7 @@ paths:
             type: object
       summary: User login
       tags:
-      - auth
+      - Authentication
   /api/auth/logout:
     post:
       description: Logs out the user by invalidating refresh token and clearing cookies
@@ -116,7 +116,7 @@ paths:
             type: object
       summary: User logout
       tags:
-      - auth
+      - Authentication
   /api/auth/refresh:
     post:
       description: Rotates refresh token and issues new access and refresh tokens
@@ -140,7 +140,7 @@ paths:
             type: object
       summary: Refresh access tokens
       tags:
-      - auth
+      - Authentication
   /api/health:
     get:
       description: Returns the health status of the application
