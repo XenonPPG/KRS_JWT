@@ -4,8 +4,8 @@ github.com/PuerkitoBio/purell v1.1.1 h1:WEQqlqaGbrPkxLJWfBwQmfEAE1Z7ONdDLqrN38tN
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 h1:d+Bc7a5rLufV/sSk/8dngufqelfh6jnri85riMAaF/M=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
-github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309110645-ae0759dceb18 h1:hAPMvimczbvh5Slt7qCSrw0+dvbOXo77ZOP+fhbE9zU=
-github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309110645-ae0759dceb18/go.mod h1:wRB/VpxKfaUZjTkOGJ6bRF3kvVMzMCsRD/WUYhA4KAQ=
+github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309112442-450c2c458673 h1:Bgh3PE0oOjKqWz4TEpOiMA/3pVdGiii71IRO1PfIZGk=
+github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309112442-450c2c458673/go.mod h1:wRB/VpxKfaUZjTkOGJ6bRF3kvVMzMCsRD/WUYhA4KAQ=
 github.com/andybalholm/brotli v1.2.0 h1:ukwgCxwYrmACq68yiUqwIWnGY0cTPox/M94sVwToPjQ=
 github.com/andybalholm/brotli v1.2.0/go.mod h1:rzTDkvFWvIrjDXZHkuS16NPggd91W3kUSvPlQ1pLaKY=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=

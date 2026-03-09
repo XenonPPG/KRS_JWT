@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.5
 
 require (
-	github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309110645-ae0759dceb18
+	github.com/XenonPPG/KRS_CONTRACTS v0.0.0-20260309112442-450c2c458673
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofiber/fiber/v2 v2.52.11
 	github.com/golang-jwt/jwt/v5 v5.3.1
