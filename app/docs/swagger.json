@@ -161,7 +161,7 @@
                     {
                         "type": "boolean",
                         "description": "Sort in ascending order",
-                        "name": "ascendingOrder",
+                        "name": "ascending_order",
                         "in": "query"
                     }
                 ],
@@ -424,7 +424,7 @@
                     {
                         "type": "boolean",
                         "description": "Sort in ascending order",
-                        "name": "ascendingOrder",
+                        "name": "ascending_order",
                         "in": "query"
                     }
                 ],

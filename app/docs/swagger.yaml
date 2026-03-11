@@ -169,7 +169,7 @@ paths:
         type: integer
       - description: Sort in ascending order
         in: query
-        name: ascendingOrder
+        name: ascending_order
         type: boolean
       produces:
       - application/json
@@ -341,7 +341,7 @@ paths:
         type: integer
       - description: Sort in ascending order
         in: query
-        name: ascendingOrder
+        name: ascending_order
         type: boolean
       produces:
       - application/json

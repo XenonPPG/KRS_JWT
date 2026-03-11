@@ -52,7 +52,7 @@ func CreateNote(c *fiber.Ctx) error {
 // @Produce json
 // @Param limit query int false "Limit number of notes"
 // @Param offset query int false "Offset for pagination"
-// @Param ascendingOrder query bool false "Sort in ascending order"
+// @Param ascending_order query bool false "Sort in ascending order"
 // @Success 200 {object} map[string]interface{} "notes"
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"

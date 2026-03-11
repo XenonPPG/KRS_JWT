@@ -172,7 +172,7 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "description": "Sort in ascending order",
-                        "name": "ascendingOrder",
+                        "name": "ascending_order",
                         "in": "query"
                     }
                 ],
@@ -435,7 +435,7 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "description": "Sort in ascending order",
-                        "name": "ascendingOrder",
+                        "name": "ascending_order",
                         "in": "query"
                     }
                 ],
