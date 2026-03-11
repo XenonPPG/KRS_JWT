@@ -168,6 +168,12 @@ const docTemplate = `{
                         "description": "Offset for pagination",
                         "name": "offset",
                         "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Sort in ascending order",
+                        "name": "ascendingOrder",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -424,6 +430,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Offset for pagination",
                         "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Sort in ascending order",
+                        "name": "ascendingOrder",
                         "in": "query"
                     }
                 ],

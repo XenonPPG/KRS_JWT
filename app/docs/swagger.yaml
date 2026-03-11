@@ -167,6 +167,10 @@ paths:
         in: query
         name: offset
         type: integer
+      - description: Sort in ascending order
+        in: query
+        name: ascendingOrder
+        type: boolean
       produces:
       - application/json
       responses:
@@ -335,6 +339,10 @@ paths:
         in: query
         name: offset
         type: integer
+      - description: Sort in ascending order
+        in: query
+        name: ascendingOrder
+        type: boolean
       produces:
       - application/json
       responses:

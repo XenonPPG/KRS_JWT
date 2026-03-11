@@ -53,6 +53,7 @@ func CreateUser(c *fiber.Ctx) error {
 // @Security BearerAuth
 // @Param limit query int false "Limit number of results"
 // @Param offset query int false "Offset for pagination"
+// @Param ascendingOrder query bool false "Sort in ascending order"
 // @Success 200 {object} map[string]interface{} "users retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
@@ -66,8 +67,9 @@ func GetAllUsers(c *fiber.Ctx) error {
 	}
 
 	users, err := initializers.GrpcUserService.GetAllUsers(c.UserContext(), &desc.GetAllUsersRequest{
-		Limit:  request.Limit,
-		Offset: request.Offset,
+		Limit:          request.Limit,
+		Offset:         request.Offset,
+		AscendingOrder: request.AscendingOrder,
 	})
 	if err != nil {
 		return utils.InternalServerError(c, err)

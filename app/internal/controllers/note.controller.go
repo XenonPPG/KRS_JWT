@@ -52,6 +52,7 @@ func CreateNote(c *fiber.Ctx) error {
 // @Produce json
 // @Param limit query int false "Limit number of notes"
 // @Param offset query int false "Offset for pagination"
+// @Param ascendingOrder query bool false "Sort in ascending order"
 // @Success 200 {object} map[string]interface{} "notes"
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
@@ -72,9 +73,10 @@ func GetAllNotes(c *fiber.Ctx) error {
 	}
 
 	notes, err := initializers.GrpcNoteService.GetAllNotes(c.UserContext(), &desc.GetAllNotesRequest{
-		UserID: targetId,
-		Limit:  request.Limit,
-		Offset: request.Offset,
+		UserID:         targetId,
+		Limit:          request.Limit,
+		Offset:         request.Offset,
+		AscendingOrder: request.AscendingOrder,
 	})
 	if err != nil {
 		return utils.InternalServerError(c, err)
