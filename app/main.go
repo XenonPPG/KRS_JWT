@@ -53,7 +53,7 @@ func main() {
 		protected.Put("/:id", controllers.UpdateUser)
 
 		// admins can control other accounts
-		adminOnly := router.Group("/", middleware.JWTProtected, middleware.RoleRequired(desc.UserRole_ADMIN))
+		adminOnly := router.Group("", middleware.JWTProtected, middleware.RoleRequired(desc.UserRole_ADMIN))
 		adminOnly.Get("/", controllers.GetAllUsers)
 	})
 

@@ -35,15 +35,18 @@ func InternalServerError(c *fiber.Ctx, message error) error {
 }
 
 func GetTargetId(c *fiber.Ctx) (targetId int64, err error) {
-	stringRole, ok := GetLocalAndParse[int32](c, "role")
-
+	role, ok := GetLocalAndParse[int32](c, "role")
 	if !ok {
+		return 0, fmt.Errorf("role not found in context")
+	}
+
+	if role == int32(desc.UserRole_ADMIN) {
+		targetId, err = strconv.ParseInt(c.Params("id"), 10, 64)
+	} else {
 		targetId, ok = GetLocalAndParse[int64](c, "user_id")
 		if !ok {
-			err = fmt.Errorf("userID not found or invalid type in context")
+			err = fmt.Errorf("user_id not found in context")
 		}
-	} else if stringRole == int32(desc.UserRole_ADMIN) {
-		targetId, err = strconv.ParseInt(c.Params("id"), 10, 64)
 	}
 
 	return

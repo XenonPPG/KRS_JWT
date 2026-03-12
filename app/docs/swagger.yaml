@@ -398,40 +398,6 @@ paths:
       summary: Create a new user
       tags:
       - users
-    put:
-      consumes:
-      - application/json
-      description: Updates an existing user's information
-      parameters:
-      - description: User update request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/user_v1.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: user updated successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: bad request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: internal server error
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Update a user
-      tags:
-      - users
   /api/user/{id}:
     delete:
       consumes:
@@ -497,6 +463,40 @@ paths:
       security:
       - BearerAuth: []
       summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing user's information
+      parameters:
+      - description: User update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_v1.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a user
       tags:
       - users
   /api/user/password:
