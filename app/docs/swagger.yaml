@@ -46,6 +46,15 @@ definitions:
       password:
         type: string
     type: object
+  user_v1.UpdatePasswordRequest:
+    properties:
+      id:
+        type: integer
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
   user_v1.UpdateUserRequest:
     properties:
       colorTheme:
@@ -504,6 +513,13 @@ paths:
       consumes:
       - application/json
       description: Updates the password for the authenticated user
+      parameters:
+      - description: Password update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_v1.UpdatePasswordRequest'
       produces:
       - application/json
       responses:

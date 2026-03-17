@@ -151,6 +151,7 @@ func UpdateUser(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Param request body desc.UpdatePasswordRequest true "Password update request"
 // @Success 200 {object} map[string]interface{} "password updated successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"

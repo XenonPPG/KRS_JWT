@@ -529,6 +529,17 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Update user password",
+                "parameters": [
+                    {
+                        "description": "Password update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_v1.UpdatePasswordRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "password updated successfully",
@@ -775,6 +786,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_v1.UpdatePasswordRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
                     "type": "string"
                 }
             }
