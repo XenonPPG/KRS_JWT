@@ -72,7 +72,8 @@ services:
     command: >
       sh -c "
         go install github.com/swaggo/swag/cmd/swag@latest &&
-        swag init -g main.go -o ./docs --parseDependency --parseInternal
+        swag init -g main.go -o ./docs --parseDependency --parseInternal &&
+        rm -f ./docs/docs.go ./docs/swagger.yaml
       "
     profiles:
       - tools
