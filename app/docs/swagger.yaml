@@ -24,7 +24,7 @@ definitions:
     format: int32
     type: integer
     x-enum-varnames:
-    - ColorTheme_UNSPECIFIED
+    - ColorTheme_THEME_UNSPECIFIED
     - ColorTheme_AUTO
     - ColorTheme_LIGHT
     - ColorTheme_DARK
@@ -70,9 +70,11 @@ definitions:
     enum:
     - 0
     - 1
+    - 2
     format: int32
     type: integer
     x-enum-varnames:
+    - UserRole_ROLE_UNSPECIFIED
     - UserRole_DEFAULT
     - UserRole_ADMIN
 info:

@@ -756,7 +756,7 @@ const docTemplate = `{
                 3
             ],
             "x-enum-varnames": [
-                "ColorTheme_UNSPECIFIED",
+                "ColorTheme_THEME_UNSPECIFIED",
                 "ColorTheme_AUTO",
                 "ColorTheme_LIGHT",
                 "ColorTheme_DARK"
@@ -826,9 +826,11 @@ const docTemplate = `{
             "format": "int32",
             "enum": [
                 0,
-                1
+                1,
+                2
             ],
             "x-enum-varnames": [
+                "UserRole_ROLE_UNSPECIFIED",
                 "UserRole_DEFAULT",
                 "UserRole_ADMIN"
             ]
