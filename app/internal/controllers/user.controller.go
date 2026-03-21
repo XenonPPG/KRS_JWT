@@ -130,10 +130,19 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	// parse request body
-	if err := utils.ParseBodyAndValidate[desc.UpdateUserRequest](c, &request); err != nil {
+	if err = utils.ParseBodyAndValidate[desc.UpdateUserRequest](c, &request); err != nil {
 		return utils.BadRequest(c)
 	}
 	request.Id = targetId
+
+	// admins can be updated only by themselves
+	selfId, ok := utils.GetLocalAndParse[int64](c, "user_id")
+	if !ok {
+		return utils.BadRequest(c)
+	}
+	if request.GetRole() == desc.UserRole_ADMIN && selfId != targetId {
+		return utils.BadRequest(c)
+	}
 
 	// update user
 	response, err := initializers.GrpcUserService.UpdateUser(c.UserContext(), &request)
