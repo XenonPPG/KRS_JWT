@@ -135,12 +135,14 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 	request.Id = targetId
 
-	// admins can be updated only by themselves
-	selfId, ok := utils.GetLocalAndParse[int64](c, "user_id")
-	if !ok {
-		return utils.BadRequest(c)
+	// get user
+	user, err := initializers.GrpcUserService.GetUser(c.UserContext(), &desc.GetUserRequest{Id: targetId})
+	if err != nil {
+		return utils.InternalServerError(c, err)
 	}
-	if request.GetRole() == desc.UserRole_ADMIN && selfId != targetId {
+
+	// admins cannot be downgraded
+	if user.GetRole() == desc.UserRole_ADMIN && int32(request.GetRole()) < int32(user.GetRole()) {
 		return utils.BadRequest(c)
 	}
 
