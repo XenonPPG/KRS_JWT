@@ -189,13 +189,13 @@
                     }
                 }
             },
-            "put": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Updates an existing note for the authenticated user",
+                "description": "Creates a new note for the authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -205,15 +205,15 @@
                 "tags": [
                     "notes"
                 ],
-                "summary": "Update a note",
+                "summary": "Create a new note",
                 "parameters": [
                     {
-                        "description": "Note update request",
+                        "description": "Note creation request",
                         "name": "note",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/note_v1.UpdateNoteRequest"
+                            "$ref": "#/definitions/note_v1.CreateNoteRequest"
                         }
                     }
                 ],
@@ -241,13 +241,13 @@
                     }
                 }
             },
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Creates a new note for the authenticated user",
+                "description": "Updates an existing note for the authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -257,15 +257,15 @@
                 "tags": [
                     "notes"
                 ],
-                "summary": "Create a new note",
+                "summary": "Update a note",
                 "parameters": [
                     {
-                        "description": "Note creation request",
+                        "description": "Note update request",
                         "name": "note",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/note_v1.CreateNoteRequest"
+                            "$ref": "#/definitions/note_v1.UpdateNoteRequest"
                         }
                     }
                 ],
@@ -605,7 +605,57 @@
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a specific user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -636,56 +686,6 @@
                 "responses": {
                     "200": {
                         "description": "user updated successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Deletes a specific user by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Delete a user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "user deleted successfully",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true

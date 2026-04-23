@@ -133,7 +133,7 @@ func GetNote(c *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{} "Bad Request"
 // @Failure 500 {object} map[string]interface{} "Internal Server Error"
 // @Security BearerAuth
-// @Router /api/note [put]
+// @Router /api/note [patch]
 func UpdateNote(c *fiber.Ctx) error {
 	// get id
 	targetId, ok := c.Locals("user_id").(int64)

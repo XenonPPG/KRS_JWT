@@ -120,7 +120,7 @@ func GetUser(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]interface{} "user updated successfully"
 // @Failure 400 {object} map[string]interface{} "bad request"
 // @Failure 500 {object} map[string]interface{} "internal server error"
-// @Router /api/user/{id} [put]
+// @Router /api/user/{id} [patch]
 func UpdateUser(c *fiber.Ctx) error {
 	var request desc.UpdateUserRequest
 

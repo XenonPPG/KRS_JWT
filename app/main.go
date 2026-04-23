@@ -50,7 +50,7 @@ func main() {
 		// targetID is defined by user role
 		// if the role is not enough - id from params is ignored
 		protected.Delete("/:id", controllers.DeleteUser)
-		protected.Put("/:id", controllers.UpdateUser)
+		protected.Patch("/:id", controllers.UpdateUser)
 
 		// admins can control other accounts
 		adminOnly := router.Group("", middleware.JWTProtected, middleware.RoleRequired(desc.UserRole_ADMIN))
@@ -69,7 +69,7 @@ func main() {
 		router.Post("/", controllers.CreateNote)
 		router.Get("/", controllers.GetAllNotes)
 		router.Get("/:id", controllers.GetNote)
-		router.Put("/", controllers.UpdateNote)
+		router.Patch("/", controllers.UpdateNote)
 		router.Delete("/:id", controllers.DeleteNote)
 	})
 
